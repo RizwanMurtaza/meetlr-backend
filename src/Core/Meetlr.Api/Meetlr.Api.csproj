@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="NSwag.AspNetCore" />
+    <PackageReference Include="NSwag.MSBuild">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Plugins\Meetlr.Module.Board\Meetlr.Module.Board.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Module.Homepage\Meetlr.Module.Homepage.csproj" />
+    <ProjectReference Include="..\Meetlr.Application\Meetlr.Application.csproj" />
+    <ProjectReference Include="..\Meetlr.Infrastructure\Meetlr.Infrastructure.csproj" />
+    <ProjectReference Include="..\Meetlr.Scheduler\Meetlr.Scheduler.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Plugins.Payment.Stripe\Meetlr.Plugins.Payment.Stripe.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Module.Notifications\Meetlr.Module.Notifications.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Plugins.MeetingTypes\Meetlr.Plugins.MeetingTypes.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Module.Calendar\Meetlr.Module.Calendar.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Module.Analytics\Meetlr.Module.Analytics.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Module.SlotInvitation\Meetlr.Module.SlotInvitation.csproj" />
+    <ProjectReference Include="..\..\Plugins\Meetlr.Module.Billing\Meetlr.Module.Billing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Endpoints\Public\" />
+  </ItemGroup>
+
+  <!--
+  TypeScript API Client Generation
+  Uses NSwag to generate TypeScript client from ASP.NET Core project.
+  Runs after build using the compiled assemblies.
+  -->
+  <Target Name="GenerateApiClient" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Message Text="Generating TypeScript API client from compiled assemblies..." Importance="high" />
+    <Exec Command="$(NSwagExe_Net90) run nswag-generate.json" WorkingDirectory="$(ProjectDir)" ContinueOnError="true" IgnoreExitCode="false" />
+  </Target>
+
+</Project>

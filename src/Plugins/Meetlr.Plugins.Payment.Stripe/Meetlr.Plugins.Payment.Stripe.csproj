@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Project References -->
+    <ProjectReference Include="..\..\Core\Meetlr.Application\Meetlr.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Meetlr.Domain\Meetlr.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Stripe.NET SDK -->
+    <PackageReference Include="Stripe.net" />
+    
+    <!-- Microsoft.Extensions for DI and Configuration -->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    
+    <!-- ASP.NET Core MVC for Controllers -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,172 @@
+### Recurring Bookings API Tests
+
+@baseUrl = https://localhost:7001
+@token = YOUR_JWT_TOKEN_HERE
+@eventTypeId = YOUR_EVENT_TYPE_ID_HERE
+@userId = YOUR_USER_ID_HERE
+
+###############################################################################
+# 1. Create a Recurring Booking
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/recurring
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "eventTypeId": "{{eventTypeId}}",
+  "inviteeName": "John Doe",
+  "inviteeEmail": "john.doe@example.com",
+  "inviteePhone": "+1234567890",
+  "inviteeTimeZone": "America/New_York",
+  "startTime": "2024-03-15T14:00:00Z",
+  "notes": "Weekly team sync meeting",
+  "frequency": "Weekly",
+  "interval": 1,
+  "dayOfWeek": 5,
+  "endType": "AfterOccurrences",
+  "totalOccurrences": 5,
+  "paymentType": "PerOccurrence"
+}
+
+###############################################################################
+# 2. Get Booking Series Details
+###############################################################################
+
+@seriesId = YOUR_SERIES_ID_HERE
+
+GET {{baseUrl}}/api/bookings/series/{{seriesId}}
+Authorization: Bearer {{token}}
+
+###############################################################################
+# 3. Get User's Booking Series (Paginated)
+###############################################################################
+
+GET {{baseUrl}}/api/bookings/series/user/{{userId}}?pageNumber=1&pageSize=10&status=Active
+Authorization: Bearer {{token}}
+
+###############################################################################
+# 4. Cancel Single Occurrence
+###############################################################################
+
+@bookingId = YOUR_BOOKING_ID_HERE
+
+POST {{baseUrl}}/api/bookings/series/{{seriesId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "scope": "ThisOccurrence",
+  "startFromBookingId": "{{bookingId}}",
+  "reason": "Conflict with another meeting"
+}
+
+###############################################################################
+# 5. Cancel This and Future Occurrences
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/series/{{seriesId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "scope": "ThisAndFuture",
+  "startFromBookingId": "{{bookingId}}",
+  "reason": "Schedule change"
+}
+
+###############################################################################
+# 6. Cancel Entire Series
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/series/{{seriesId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "scope": "AllOccurrences",
+  "reason": "No longer needed"
+}
+
+###############################################################################
+# 7. Update Series (Reschedule)
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/series/{{seriesId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "newStartTime": "2024-03-15T15:00:00Z",
+  "scope": "ThisAndFuture",
+  "startFromBookingId": "{{bookingId}}"
+}
+
+###############################################################################
+# 8. Pause Series
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/series/{{seriesId}}/pause
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "resume": false
+}
+
+###############################################################################
+# 9. Resume Series
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/series/{{seriesId}}/pause
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "resume": true
+}
+
+###############################################################################
+# 10. Create Recurring Booking with BiWeekly Frequency
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/recurring
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "eventTypeId": "{{eventTypeId}}",
+  "inviteeName": "Jane Smith",
+  "inviteeEmail": "jane.smith@example.com",
+  "inviteeTimeZone": "America/Los_Angeles",
+  "startTime": "2024-03-20T10:00:00Z",
+  "notes": "Bi-weekly check-in",
+  "frequency": "BiWeekly",
+  "interval": 1,
+  "dayOfWeek": 3,
+  "endType": "ByDate",
+  "endDate": "2024-06-30T00:00:00Z",
+  "paymentType": "Subscription"
+}
+
+###############################################################################
+# 11. Create Recurring Booking with Monthly Frequency
+###############################################################################
+
+POST {{baseUrl}}/api/bookings/recurring
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "eventTypeId": "{{eventTypeId}}",
+  "inviteeName": "Bob Johnson",
+  "inviteeEmail": "bob.johnson@example.com",
+  "inviteeTimeZone": "Europe/London",
+  "startTime": "2024-03-01T09:00:00Z",
+  "notes": "Monthly review meeting",
+  "frequency": "Monthly",
+  "interval": 1,
+  "endType": "AfterOccurrences",
+  "totalOccurrences": 6,
+  "paymentType": "PerOccurrence"
+}

@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Project References -->
+        <ProjectReference Include="..\..\Core\Meetlr.Application\Meetlr.Application.csproj" />
+        <ProjectReference Include="..\..\Core\Meetlr.Domain\Meetlr.Domain.csproj" />
+        <ProjectReference Include="..\..\Core\Meetlr.Infrastructure\Meetlr.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- MediatR for CQRS -->
+        <PackageReference Include="MediatR" />
+
+        <!-- FluentValidation -->
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+
+        <!-- Entity Framework Core (for IEntityTypeConfiguration) -->
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+
+        <!-- Microsoft.Extensions for DI and Configuration -->
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+        <PackageReference Include="Microsoft.Extensions.Options" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+
+        <!-- Google Calendar API -->
+        <PackageReference Include="Google.Apis.Calendar.v3" />
+
+        <!-- ASP.NET Core MVC for Controllers -->
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+</Project>
