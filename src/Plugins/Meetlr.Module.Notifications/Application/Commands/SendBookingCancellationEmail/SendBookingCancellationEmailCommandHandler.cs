@@ -87,7 +87,7 @@ public class SendBookingCancellationEmailCommandHandler : IRequestHandler<SendBo
                 ["location"] = booking.Location ?? "Not specified",
                 ["meetingLink"] = booking.MeetingLink ?? "",
                 ["notes"] = booking.Notes ?? "",
-                ["cancellationReason"] = booking.CancellationReason ?? "",
+                ["cancellationReason"] = string.IsNullOrWhiteSpace(booking.CancellationReason) ? "No reason provided" : booking.CancellationReason,
                 ["confirmationUrl"] = _urlsSettings.BuildBookingDetailsUrl(booking.ConfirmationToken),
                 ["cancellationUrl"] = _urlsSettings.BuildCancellationUrl(booking.CancellationToken),
                 ["tenantName"] = booking.HostUser.Tenant?.Name ?? "Calendly"

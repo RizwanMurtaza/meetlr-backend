@@ -3,6 +3,7 @@ using Meetlr.Application.Plugins.Services;
 using Meetlr.Domain.Entities.Emails;
 using Meetlr.Domain.Enums;
 using Meetlr.Module.Notifications.Infrastructure.Data.Seeding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Meetlr.Module.Notifications.Infrastructure.Services;
@@ -84,6 +85,60 @@ public class EventEmailTemplateSeeder : IEventEmailTemplateSeeder
         {
             _logger.LogError(ex, "Failed to seed email templates for event {EventId}", eventId);
             // Don't throw - email templates are not critical for event creation
+        }
+    }
+
+    public async Task UpdateAllEventTemplatesToLatestAsync(CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Updating all event email templates to latest defaults...");
+
+        try
+        {
+            var defaultTemplates = DefaultEmailTemplates.GetDefaults();
+            var updatedCount = 0;
+
+            foreach (var templateType in EventTemplateTypes)
+            {
+                if (!defaultTemplates.TryGetValue(templateType, out var templateData))
+                    continue;
+
+                var (subject, htmlBody, plainText, _) = templateData;
+
+                // Get all event templates of this type
+                var eventTemplates = await _unitOfWork.Repository<EventEmailTemplate>()
+                    .GetQueryable()
+                    .Where(t => t.TemplateType == templateType)
+                    .ToListAsync(cancellationToken);
+
+                foreach (var template in eventTemplates)
+                {
+                    // Update to latest default
+                    if (template.Subject != subject ||
+                        template.HtmlBody != htmlBody ||
+                        template.PlainTextBody != plainText)
+                    {
+                        template.Subject = subject;
+                        template.HtmlBody = htmlBody;
+                        template.PlainTextBody = plainText;
+                        template.UpdatedAt = DateTime.UtcNow;
+                        template.UpdatedBy = "System";
+
+                        _unitOfWork.Repository<EventEmailTemplate>().Update(template);
+                        updatedCount++;
+                    }
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation(
+                "Successfully updated {UpdatedCount} event email templates to latest defaults",
+                updatedCount);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to update event email templates to latest defaults");
+            // Don't throw - this is a maintenance operation
         }
     }
 }

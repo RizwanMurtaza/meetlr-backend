@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Meetlr.Domain.Entities.Emails;
 using Meetlr.Application.Common.Interfaces;
+using Meetlr.Application.Plugins.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -12,13 +13,16 @@ namespace Meetlr.Module.Notifications.Infrastructure.Data.Seeding;
 public class EmailTemplateSeeder
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEventEmailTemplateSeeder _eventEmailTemplateSeeder;
     private readonly ILogger<EmailTemplateSeeder> _logger;
 
     public EmailTemplateSeeder(
         IUnitOfWork unitOfWork,
+        IEventEmailTemplateSeeder eventEmailTemplateSeeder,
         ILogger<EmailTemplateSeeder> logger)
     {
         _unitOfWork = unitOfWork;
+        _eventEmailTemplateSeeder = eventEmailTemplateSeeder;
         _logger = logger;
     }
 
@@ -87,6 +91,9 @@ public class EmailTemplateSeeder
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("System email templates seeded/updated successfully ({Count} templates)", defaultTemplates.Count);
+
+            // Also update event-level templates to ensure existing events get the latest defaults
+            await _eventEmailTemplateSeeder.UpdateAllEventTemplatesToLatestAsync(cancellationToken);
         }
         catch (Exception ex)
         {

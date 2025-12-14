@@ -87,7 +87,7 @@ public class QueueBookingCompletedTasksHandler : INotificationHandler<BookingCom
                 notification.HostUserId,
                 notification.TenantId,
                 NotificationType.CalendarSync,
-                executeAt: now.AddSeconds(5),
+                executeAt: now.AddSeconds(3),
                 cancellationToken);
 
             _logger.LogDebug("Queued CalendarSync for booking {BookingId}", booking.Id);

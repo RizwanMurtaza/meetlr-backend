@@ -15,4 +15,12 @@ public interface IEventEmailTemplateSeeder
     /// <param name="tenantId">The tenant ID for the event</param>
     /// <param name="cancellationToken">Cancellation token</param>
     Task SeedDefaultTemplatesForEventAsync(Guid eventId, Guid tenantId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates all existing event email templates to the latest default templates.
+    /// This should be called when default templates are updated to ensure existing events
+    /// receive the updated templates.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token</param>
+    Task UpdateAllEventTemplatesToLatestAsync(CancellationToken cancellationToken = default);
 }
